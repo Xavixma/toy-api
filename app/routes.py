@@ -8,7 +8,7 @@ bp = Blueprint("routes", __name__)
 @bp.before_request
 def extract_tenant():
     tenant_id = request.headers.get('X-Tenant-ID')
-    if not tenant_id:
+    if request.path != ["/ping","/"] and "X-Tenant-ID" not in request.headers:
         abort(400, description="Missing X-Tenant-ID header")
     g.tenant_id = tenant_id
 
