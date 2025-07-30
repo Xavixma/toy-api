@@ -6,7 +6,7 @@ bp = Blueprint("routes", __name__)
 
 @bp.route("/")
 def hello():
-    return {"message": "You rock Xavi!"}
+    return {"message": "Et el puto Xavi!"}
 
 @bp.route("/items", methods=["GET"])
 def get_items():
