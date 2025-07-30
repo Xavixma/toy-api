@@ -38,6 +38,7 @@ def create_item():
         db.session.commit()
         return jsonify({"message": "Item created"}), 201
     except Exception as e:
+        print(f"❌ ERROR creating item: {e}")
         app.logger.error(f"❌ ERROR creating item: {e}")
         return jsonify({"error": str(e)}), 500
 
