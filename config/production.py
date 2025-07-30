@@ -7,7 +7,7 @@ class ProductionConfig:
     DEBUG = False
 
 def get_production_config():
-    secret_name = os.getenv("SECRET_NAME", "toy-apps-secrets")
+    secret_name = os.getenv("SECRET_NAME", "toy-app-secrets")
     region = os.getenv("AWS_REGION", "eu-west-1")
 
     client = boto3.client("secretsmanager", region_name=region)
