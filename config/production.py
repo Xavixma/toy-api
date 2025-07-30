@@ -15,6 +15,15 @@ def get_production_config():
     secret = json.loads(response["SecretString"])
 
     config = ProductionConfig()
-    config.SQLALCHEMY_DATABASE_URI = secret["DATABASE_URL"]
-    config.SECRET_KEY = secret["SECRET_KEY"]
+
+    # Construïm la DATABASE_URL manualment
+    username = secret["username"]
+    password = secret["password"]
+    host = secret["host"]
+    port = secret["port"]
+    dbname = secret["dbname"]
+    config.SQLALCHEMY_DATABASE_URI = f"postgresql://{username}:{password}@{host}:{port}/{dbname}"
+
+    config.SECRET_KEY = secret.get("SECRET_KEY", "default-secret-key")
     return config
+
