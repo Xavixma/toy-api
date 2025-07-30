@@ -1,0 +1,22 @@
+[  {
+    "name": "toy-api",
+    "image": "517691465982.dkr.ecr.eu-west-1.amazonaws.com/toy-api:latest",
+    "portMappings": [
+      {
+        "containerPort": 5000,
+        "hostPort": 5000,
+        "protocol": "tcp"
+      }
+    ],
+    "essential": true,
+    "environment": [],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/toy-api",
+        "awslogs-region": "eu-west-1", 
+        "awslogs-stream-prefix": "ecs"
+      }
+    }
+  }
+]
