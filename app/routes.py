@@ -1,6 +1,7 @@
-from flask import Blueprint, request, jsonify, g, abort
+from flask import Blueprint, request, jsonify, g, abort, current_app
 from .models import Item
 from . import db
+from auth import generate_token, require_auth, USERS_DB
 
 
 bp = Blueprint("routes", __name__)
@@ -17,16 +18,40 @@ def extract_tenant():
 def hello():
     return {"message": "Et el puto Xavi!"}
 
+
+@bp.route("/login", methods=["POST"])
+def login():
+    data = request.json
+    username = data.get("username")
+    password = data.get("password")
+
+    user = USERS_DB.get(username)
+    if user and user["password"] == password:
+        token = generate_token(username, user["tenant_id"])
+        return jsonify({"access_token": token})
+    return jsonify({"message": "Invalid credentials"}), 401
+
+@bp.route("/me", methods=["GET"])
+@require_auth
+def me():
+    return jsonify({
+        "user": request.user["username"],
+        "tenant_id": request.user["tenant_id"]
+    })
+
+
 @bp.route("/items", methods=["GET"])
+@require_auth
 def get_items():
     try:
         items = Item.query.filter_by(tenant_id=g.tenant_id).all()
         return jsonify([{"id": item.id, "name": item.name} for item in items])
     except Exception as e:
-        app.logger.error(f"❌ ERROR creating item: {e}")
+        current_app.logger.error(f"❌ ERROR retrieving items: {e}")
         return jsonify({"error": str(e)}), 500
 
 @bp.route("/items", methods=["POST"])
+@require_auth
 def create_item():
     try:
         data = request.get_json()
@@ -38,8 +63,7 @@ def create_item():
         db.session.commit()
         return jsonify({"message": "Item created"}), 201
     except Exception as e:
-        print(f"❌ ERROR creating item: {e}")
-        app.logger.error(f"❌ ERROR creating item: {e}")
+        current_app.logger.error(f"❌ ERROR retrieving items: {e}")
         return jsonify({"error": str(e)}), 500
 
 @bp.route("/ping")
