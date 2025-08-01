@@ -6,7 +6,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiem el codi
-COPY app/ app/
+COPY backend/ backend/
 COPY config/ config/
 COPY main.py .
 COPY .env.production .env.production
